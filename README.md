@@ -2,6 +2,7 @@
 <div align="left">
     <img src="code/aligned/app/static/images/logo.svg",style="height:50px;"> 
 </div>
+
 # Yoga Pose Correction App
 # Project Description
 Aligned is a yoga pose correction web application that processes images and videos of a user’s yoga poses and provides feedback on how to improve the pose. The app was built using Flask and runs on an Amazon EC2 instance with GPU.
