@@ -1,0 +1,157 @@
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-140144445-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-140144445-1');
+</script>
+
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="pose-page jumbotron jumbotron-fluid">
+  <div class= "container" >
+    <h1 class="title display-4" align="center">
+      You selected: <strong>{{pose_name}}</strong>
+      <small>(<a href="/poses">change</a>)</small>
+    </h1>
+
+    <p class="pose-desc">{{pose_desc}}</p>
+
+    <div class="steps row">
+      <div class="instructions col">
+        <p><strong> Follow this instructions </strong></p>
+        <div class="box">
+            <iframe src="https://player.vimeo.com/video/334225500?autoplay=1&loop=1&color=000&title=0&byline=0&portrait=0" width="100%" height="100%" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="record col">
+        <p><strong> Your turn! </strong></p>
+        <div class="box">
+          <div class="inner-box">
+            <button
+              data-toggle="modal"
+              data-target="#videoRecordingModal"
+              class="btn btn-outline-primary round">
+              Start Assessing
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="videoRecordingModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <video id="video" class="video-player" autoplay> </video>
+          <div id="bar" class="progress"></div>
+          <audio id='done' src="{{ url_for('static', filename='done.m4a') }}"></audio>
+        </div>
+        <div class="modal-footer">
+          <div align="left">
+            Click 'Start recording', then go to your mat! <br>
+            Hold your pose until you hear a signal.
+          </div>
+          <div>
+            <button id="capture" type="button" class="btn btn-primary"> Start recording! </button>
+            <button id='send' type="button" class="btn btn-secondary" disabled="true">Start analysing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script type="text/javascript">
+    window.addEventListener("DOMContentLoaded", function() {
+    var video = document.querySelector('video');
+    var constraints = { video: { width: 854, height: 480 } };
+
+    var recordedChunks = [];
+    var options = {mimeType: 'video/webm; codecs=vp9'};
+    var superBuffer;
+
+    navigator.mediaDevices.getUserMedia(constraints)
+    .then(function(stream) {
+          video.srcObject = stream;
+          video.play();
+    }).catch(function(err) {
+        console.log(err.name + ": " + err.message);
+    });
+
+    function startCapture() {
+      $("#capture").html("Recording...")
+
+      mediaRecorder = new MediaRecorder(video.srcObject, options);
+      mediaRecorder.ondataavailable = handleDataAvailable
+      window.setTimeout(function() {mediaRecorder.start(1000)}, 10000)
+      window.setTimeout(stopAndPlay, 15000)
+
+      function handleDataAvailable(event) {
+        console.log(event.data.size)
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      }
+
+      function stopAndPlay() {
+        $("#capture").html("Record").removeClass("btn-primary").addClass("btn-secondary")
+        $("#send").removeClass("btn-secondary").addClass("btn-primary").removeAttr("disabled")
+        var audio = document.querySelector('audio');
+        audio.play();
+        console.log("Stopped")
+        video.pause()
+        mediaRecorder.stop()
+        replay()
+      }
+
+      function replay() {
+        video.srcObject = null
+        superBuffer = new Blob(recordedChunks);
+        video.src = window.webkitURL.createObjectURL(superBuffer);
+        video.controls = true
+        video.loop = true
+        video.load()
+      }
+    }
+
+    function upload() {
+        console.log("Uploading...")
+        $(".analyze").css({"display":"block"})
+                            $("#bar").append('<div id="bar" class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: 100%"></div>')
+                            
+        var formData = new FormData();
+        formData.append("file", superBuffer, 'video.webm');
+
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST", "/video");
+
+        // check when state changes,
+        xmlhttp.onreadystatechange = function() {
+          if(xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            window.location.replace(xmlhttp.responseText)
+          }
+        }
+
+        xmlhttp.send(formData);
+        console.log(formData.get('file'));
+    }
+
+
+    document.getElementById("capture").addEventListener("click", function() {
+      startCapture();
+    });
+
+    document.getElementById("send").addEventListener("click", function() {
+      upload();
+    });
+  }, false);
+  </script>
+{% endblock %}

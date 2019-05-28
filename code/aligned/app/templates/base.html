@@ -1,0 +1,27 @@
+{% extends "bootstrap/base.html" %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block styles %}
+      {{super()}}
+      <link href="{{ url_for('static', filename='stylesheets/base.css') }}" rel="stylesheet">
+      <link href="{{ url_for('static', filename='stylesheets/pages.css') }}" rel="stylesheet">
+    {% endblock %}
+
+    {% endblock %}
+  </head>
+  <body>
+    {% block navbar %}
+      {% include 'navbar.html' %}
+    {% endblock %}
+
+    {% block content %}
+    {% endblock%}
+  </body>
+</html>

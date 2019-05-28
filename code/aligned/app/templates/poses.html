@@ -1,0 +1,59 @@
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-140144445-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-140144445-1');
+</script>
+
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Choose asanas{% endblock %}
+
+
+{% block content %}
+<div class="poses-page jumbotron jumbotron-fluid">
+  <div class= "container" >
+    <h4 class="title display-4" align="center">Choose the asana you want to assess</h4>
+
+    <div class="pose-picker row">
+      <div class="col text-center">
+        <ul>
+          <li>
+              <a href="/poses/1" onclick="gtag('event','click',{'event_category':'link','event_label':'click_pose1', 'value':1});">
+              <img src={{ url_for('static',filename='images/poses/pose1.svg') }}
+                    class="d-inline-block align-top"
+                    height="200" width="200" />
+              </a>
+              <p>Warrior II</p>
+          </li>
+
+          <li>
+              <a href="/poses/2">
+              <img src={{ url_for('static',filename='images/poses/pose2.svg') }}
+                    class="d-inline-block align-top"
+                    height="200" width="200"/>
+              </a>
+              <p>Downward facing dog</p>
+          </li>
+
+          <li>
+            <a href="/poses/3">
+              <img src={{ url_for('static',filename='images/poses/pose3.svg') }}
+                    class="d-inline-block align-top"
+                    height="200" width="200"/>
+            </a>
+              <p>Phalakasana</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="more-to-come display-6" align="center">More asanas to come...</p>
+  </div>
+</div>
+{% endblock %}

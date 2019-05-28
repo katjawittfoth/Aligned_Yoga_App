@@ -1,0 +1,32 @@
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-140144445-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-140144445-1');
+</script>
+
+
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block content %}
+<div class="login-page jumbotron jumbotron-fluid">
+    <div class="container">
+        {% include 'flash.html' %}
+
+        <form method="POST"> <!-- post : handle submission -->
+            <h2> Sign Up </h2>
+            {{ form.hidden_tag() }}
+            {{ wtf.form_field(form.username) }}
+            {{ wtf.form_field(form.email) }}
+            {{ wtf.form_field(form.password) }}
+            <br>
+            <br>
+            <center> {{ wtf.form_field(form.submit, class_="btn btn-primary round")}} </center>
+        </form>
+    </div> <!-- /container -->
+</div>
+{% endblock %}

@@ -1,0 +1,338 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Auto Generated Code Documentation &#8212; Aligned  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Code Tutorial" href="tutorial.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-deploy">
+<span id="auto-generated-code-documentation"></span><h1>Auto Generated Code Documentation<a class="headerlink" href="#module-deploy" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="deploy.main">
+<code class="descclassname">deploy.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deploy.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deploy.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main driver function</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="deploy.run_flask">
+<code class="descclassname">deploy.</code><code class="descname">run_flask</code><span class="sig-paren">(</span><em>ssh</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deploy.html#run_flask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deploy.run_flask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate the flask route</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="deploy.ssh_client">
+<code class="descclassname">deploy.</code><code class="descname">ssh_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/deploy.html#ssh_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deploy.ssh_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return ssh client object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="deploy.ssh_connection">
+<code class="descclassname">deploy.</code><code class="descname">ssh_connection</code><span class="sig-paren">(</span><em>ssh</em>, <em>ec2_address</em>, <em>user</em>, <em>key_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/deploy.html#ssh_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#deploy.ssh_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect to ssh and return ssh connect object</p>
+</dd></dl>
+
+<span class="target" id="module-aligned.modeling"></span><dl class="function">
+<dt id="aligned.modeling.front_knee_acute">
+<code class="descclassname">aligned.modeling.</code><code class="descname">front_knee_acute</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>min_angle=100</em>, <em>side='right'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#front_knee_acute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.front_knee_acute" title="Permalink to this definition">¶</a></dt>
+<dd><p>10:”RKnee”,
+11:”RAnkle”,
+13:”LKnee”,
+14:”LAnkle”</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.front_knee_obtuse">
+<code class="descclassname">aligned.modeling.</code><code class="descname">front_knee_obtuse</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>max_angle=75</em>, <em>side='right'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#front_knee_obtuse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.front_knee_obtuse" title="Permalink to this definition">¶</a></dt>
+<dd><p>10:”RKnee”,
+11:”RAnkle”,
+13:”LKnee”,
+14:”LAnkle”</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.head_front">
+<code class="descclassname">aligned.modeling.</code><code class="descname">head_front</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>max_ratio_diff=0.5</em>, <em>side='right'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#head_front"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.head_front" title="Permalink to this definition">¶</a></dt>
+<dd><p>0:”Nose”
+15:”REye”
+16:”LEye”
+17:”REar”
+18:”LEar”
+Compares distance from left eye to right eye
+If looking forward eye to eye distance will be larger and closer to ear to
+ear distance
+If looking if head is front they will be small, and much smaller than ear
+to ear distance
+Divide by length from ear to ear to normalize
+and account for different distances
+label 0 - head is front
+label 1 - head is not facing the front (facing the side)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.hips_square">
+<code class="descclassname">aligned.modeling.</code><code class="descname">hips_square</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>max_slope=0.1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#hips_square"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.hips_square" title="Permalink to this definition">¶</a></dt>
+<dd><p>9:”RHip” and 12:”LHip”
+straight line (square hips) would have a slope of 0
+0 - stright
+1 - not straight</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.mean_ten_still_frames">
+<code class="descclassname">aligned.modeling.</code><code class="descname">mean_ten_still_frames</code><span class="sig-paren">(</span><em>pose_df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#mean_ten_still_frames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.mean_ten_still_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function find the ten stillest frames in the pose’s df.
+It returns the mean for each point</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.shoulders_up">
+<code class="descclassname">aligned.modeling.</code><code class="descname">shoulders_up</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>max_angle=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#shoulders_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.shoulders_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:”Neck”,
+2:”RShoulder”,
+5:”LShoulder”.
+looks at line from left shoulder to neck,
+and line from right shoulder to neck
+if either are not straight returns 1
+if both are flat (slope of 0 or close to 0) returns 1</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.step_too_narrow">
+<code class="descclassname">aligned.modeling.</code><code class="descname">step_too_narrow</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>min_ratio=0.61</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#step_too_narrow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.step_too_narrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>4:”RWrist”,
+7:”LWrist”,
+11:”RAnkle”,
+14:”LAnkle”.
+compares arm span to distance between feet
+if feet are wide enough, the distance between feet will be similar
+to the distance between arms
+label - 0 feet are wide enough
+label - 1 feet are too narrow</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.step_too_wide">
+<code class="descclassname">aligned.modeling.</code><code class="descname">step_too_wide</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>max_ratio=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#step_too_wide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.step_too_wide" title="Permalink to this definition">¶</a></dt>
+<dd><p>4:”RWrist”,
+7:”LWrist”,
+11:”RAnkle”,
+14:”LAnkle”.
+compares arm span to distance between feet
+if feet are wide enough, the distance between feet will be similar
+to the distance between arms
+label - 0 feet are wide enough
+label - 1 feet are too narrow</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.straight_arms_area">
+<code class="descclassname">aligned.modeling.</code><code class="descname">straight_arms_area</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>max_area=40</em>, <em>max_slope=0.07</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#straight_arms_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.straight_arms_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>7:”LWrist”
+5: ‘LShoulder’
+4:”RWrist”
+2: ‘RShoulder’
+1: ‘Neck’</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.straight_arms_slope">
+<code class="descclassname">aligned.modeling.</code><code class="descname">straight_arms_slope</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>min_slope=-0.07</em>, <em>max_slope=0.0481</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#straight_arms_slope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.straight_arms_slope" title="Permalink to this definition">¶</a></dt>
+<dd><p>input array of 25 x corridnates and array of 25 y corridinates
+from openpose (x_y_points(data))
+output is slope of the line from one hand to another
+perfectly straight arms would have a slope of zero.
+7:”LWrist” and 4:”RWrist”
+0 - straight
+1 - not straight
+returns slope and label</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.straight_torso">
+<code class="descclassname">aligned.modeling.</code><code class="descname">straight_torso</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>min_slope=9</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#straight_torso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.straight_torso" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:”Neck” and 8:”MidHip”
+perfect would be a vertial line, so steep/high slope is ideal
+0 - straight
+1 - not straight
+returns slope and label</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.torso_backward">
+<code class="descclassname">aligned.modeling.</code><code class="descname">torso_backward</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>min_slope=0.02</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#torso_backward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.torso_backward" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:”Neck” and 8:”MidHip”
+perfect would be a vertial line, so steep/high slope is ideal
+swtiches x and y for easier computation, want reversed slope to be
+zero if straight
+for too far forward we see if the slope if larger than the min slope
+0 - not too far forward
+1 - too far forward
+returns slope and label</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.torso_forward">
+<code class="descclassname">aligned.modeling.</code><code class="descname">torso_forward</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>min_slope=-0.2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#torso_forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.torso_forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>1:”Neck” and 8:”MidHip”
+perfect would be a vertial line, so steep/high slope is ideal
+for too far forward we see if the slope if larger than the min slope
+0 - not too far forward
+1 - too far forward
+returns slope and label</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.warrior2_label_csv">
+<code class="descclassname">aligned.modeling.</code><code class="descname">warrior2_label_csv</code><span class="sig-paren">(</span><em>pose_df</em>, <em>side='right'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#warrior2_label_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.warrior2_label_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>takes averages of all rows (2d_points)
+1 - needs to be adjusted
+0 - good
+Order for 9 digit labeling:
+1. arms
+2. front_knee_obtuse
+3. front_knee_acute
+4. head_sideways
+5. hips_angled
+6. narrow_step
+7. shoulders_up
+8. torso_forward
+9. torso_backward
+10. wide_step</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.modeling.x_y_points">
+<code class="descclassname">aligned.modeling.</code><code class="descname">x_y_points</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/modeling.html#x_y_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.modeling.x_y_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>from array of average of points in a single ‘pose_keypoints_2d’ array
+finds x and y corridnates and return two lists</p>
+</dd></dl>
+
+<span class="target" id="module-aligned.process_label"></span><span class="target" id="module-aligned.process_openpose_user"></span><dl class="function">
+<dt id="aligned.process_openpose_user.df2csv_s3">
+<code class="descclassname">aligned.process_openpose_user.</code><code class="descname">df2csv_s3</code><span class="sig-paren">(</span><em>df</em>, <em>s3_path</em>, <em>s3_path_avi</em>, <em>processed_path</em>, <em>bucket_name='alignedstorage'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/process_openpose_user.html#df2csv_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.process_openpose_user.df2csv_s3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Pandas dataframe to csv.
+Upload csv and processed avi to s3.
+Return dataframe.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.process_openpose_user.process_openpose">
+<code class="descclassname">aligned.process_openpose_user.</code><code class="descname">process_openpose</code><span class="sig-paren">(</span><em>path_local</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/process_openpose_user.html#process_openpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.process_openpose_user.process_openpose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process local avi file using openpose software.
+Upload files to s3.
+Return dataframe of keypoints.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="aligned.process_openpose_user.upload_and_delete">
+<code class="descclassname">aligned.process_openpose_user.</code><code class="descname">upload_and_delete</code><span class="sig-paren">(</span><em>local_dir</em>, <em>s3_path</em>, <em>processed_path</em>, <em>s3_path_avi</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/aligned/process_openpose_user.html#upload_and_delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#aligned.process_openpose_user.upload_and_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert pose keypoints from individual jsons to single df and
+upload to s3.
+Return dataframe of pose keypoints.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Aligned</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Code Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Auto Generated Code Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="tutorial.html" title="previous chapter">Code Tutorial</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Katja Witforth, Sankeerti Haniyur, Quinn Keck,     Masha Vasilenko, Connor Swanson, Evan Calkins, Brian Dorsey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/api_ref.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

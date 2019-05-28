@@ -1,0 +1,21 @@
+<header class="main-header">
+  <div class="container">
+    <div class="main-logo">
+      <a href="/">
+        <img src={{ url_for('static',filename='images/logo.svg') }} alt="Aligned Logo" />
+      </a>
+    </div>
+
+    <nav class="main-nav">
+      <ul>
+      {% if not current_user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-primary round" href="/register">Sign up</a></li>
+      {% else %}
+        <li class="nav-item"><a class="nav-link" href="/poses">Poses</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Log out</a></li>
+      {% endif %}
+      </ul>
+    </nav>
+  </div>
+</header>

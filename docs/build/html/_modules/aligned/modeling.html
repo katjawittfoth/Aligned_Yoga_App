@@ -1,0 +1,455 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>aligned.modeling &#8212; Aligned  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for aligned.modeling</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="mean_ten_still_frames"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.mean_ten_still_frames">[docs]</a><span class="k">def</span> <span class="nf">mean_ten_still_frames</span><span class="p">(</span><span class="n">pose_df</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function find the ten stillest frames in the pose&#39;s df.</span>
+<span class="sd">    It returns the mean for each point</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pose_df = pose_csv</span>
+    <span class="n">pose_diff</span> <span class="o">=</span> <span class="n">pose_df</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
+    <span class="n">rows_total_diff</span> <span class="o">=</span> <span class="n">pose_diff</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">rows_total_diff</span> <span class="o">=</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rows_total_diff</span><span class="p">]</span>
+    <span class="n">ten_rows_diff</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rows_total_diff</span><span class="p">)</span><span class="o">-</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">ten_rows_diff</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rows_total_diff</span><span class="p">[</span><span class="n">i</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">10</span><span class="p">)])))</span>
+    <span class="n">best_ten</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ten_rows_diff</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">still_point</span> <span class="o">=</span> <span class="n">best_ten</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">stillest_ten</span> <span class="o">=</span> <span class="n">pose_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">still_point</span><span class="p">:</span><span class="n">still_point</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">stillest_ten</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mean</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span></div>
+
+
+<div class="viewcode-block" id="x_y_points"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.x_y_points">[docs]</a><span class="k">def</span> <span class="nf">x_y_points</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    from array of average of points in a single &#39;pose_keypoints_2d&#39; array</span>
+<span class="sd">    finds x and y corridnates and return two lists</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_warrior</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">y_warrior</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">c_warrior</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># certainity of pose</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">x_warrior</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">y_warrior</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">c_warrior</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">x_warrior</span><span class="p">,</span> <span class="n">y_warrior</span></div>
+
+
+<span class="c1"># In progress</span>
+
+<div class="viewcode-block" id="straight_arms_slope"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.straight_arms_slope">[docs]</a><span class="k">def</span> <span class="nf">straight_arms_slope</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_slope</span><span class="o">=-</span><span class="mf">0.07</span><span class="p">,</span> <span class="n">max_slope</span><span class="o">=</span><span class="mf">0.0481</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    input array of 25 x corridnates and array of 25 y corridinates</span>
+<span class="sd">    from openpose (x_y_points(data))</span>
+<span class="sd">    output is slope of the line from one hand to another</span>
+<span class="sd">    perfectly straight arms would have a slope of zero.</span>
+<span class="sd">    7:&quot;LWrist&quot; and 4:&quot;RWrist&quot;</span>
+<span class="sd">    0 - straight</span>
+<span class="sd">    1 - not straight</span>
+<span class="sd">    returns slope and label</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">min_slope</span> <span class="o">&lt;=</span> <span class="n">slope</span> <span class="o">&lt;=</span> <span class="n">max_slope</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">slope</span><span class="p">,</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">slope</span><span class="p">,</span> <span class="mf">1.0</span></div>
+
+
+<div class="viewcode-block" id="straight_arms_area"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.straight_arms_area">[docs]</a><span class="k">def</span> <span class="nf">straight_arms_area</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_area</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">max_slope</span><span class="o">=</span><span class="mf">0.07</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    7:&quot;LWrist&quot;</span>
+<span class="sd">    5: &#39;LShoulder&#39;</span>
+<span class="sd">    4:&quot;RWrist&quot;</span>
+<span class="sd">    2: &#39;RShoulder&#39;</span>
+<span class="sd">    1: &#39;Neck&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+    <span class="n">d2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">7</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">((</span><span class="n">d1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">d1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="p">(</span><span class="n">d2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">d2</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">arms_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">slope_shoulder</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">A</span><span class="o">/</span><span class="n">arms_len</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">max_area</span> <span class="ow">and</span> <span class="n">slope_shoulder</span> <span class="o">&lt;=</span> <span class="n">max_slope</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">A</span><span class="o">/</span><span class="n">arms_len</span><span class="p">,</span> <span class="n">slope_shoulder</span><span class="p">),</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">A</span><span class="o">/</span><span class="n">arms_len</span><span class="p">,</span> <span class="n">slope_shoulder</span><span class="p">),</span> <span class="mf">1.0</span></div>
+
+
+<span class="k">def</span> <span class="nf">straight_arms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_slope</span><span class="o">=-</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">max_slope</span><span class="o">=</span><span class="mf">0.25</span><span class="p">):</span>
+    <span class="n">slope_shoulder</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">min_slope</span> <span class="o">&lt;=</span> <span class="n">slope_shoulder</span> <span class="o">&lt;=</span> <span class="n">max_slope</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">straight_arms_slope</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">straight_arms_area</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="shoulders_up"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.shoulders_up">[docs]</a><span class="k">def</span> <span class="nf">shoulders_up</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_angle</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    1:&quot;Neck&quot;,</span>
+<span class="sd">    2:&quot;RShoulder&quot;,</span>
+<span class="sd">    5:&quot;LShoulder&quot;.</span>
+<span class="sd">    looks at line from left shoulder to neck,</span>
+<span class="sd">    and line from right shoulder to neck</span>
+<span class="sd">    if either are not straight returns 1</span>
+<span class="sd">    if both are flat (slope of 0 or close to 0) returns 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">left_degrees</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">right_degrees</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">slope_shoulder</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">left_degrees</span> <span class="o">&lt;=</span> <span class="n">max_angle</span> <span class="ow">and</span> <span class="n">right_degrees</span> <span class="o">&lt;=</span> <span class="n">max_angle</span><span class="p">)</span> \
+       <span class="ow">and</span> <span class="n">slope_shoulder</span> <span class="o">&lt;=</span> <span class="mf">0.25</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">left_degrees</span><span class="p">,</span> <span class="n">right_degrees</span><span class="p">,</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">left_degrees</span><span class="p">,</span> <span class="n">right_degrees</span><span class="p">,</span> <span class="mf">1.0</span></div>
+
+
+<div class="viewcode-block" id="hips_square"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.hips_square">[docs]</a><span class="k">def</span> <span class="nf">hips_square</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_slope</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    9:&quot;RHip&quot; and 12:&quot;LHip&quot;</span>
+<span class="sd">    straight line (square hips) would have a slope of 0</span>
+<span class="sd">    0 - stright</span>
+<span class="sd">    1 - not straight</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span>
+    <span class="k">if</span> <span class="o">-</span><span class="n">max_slope</span> <span class="o">&lt;=</span> <span class="n">slope</span> <span class="o">&lt;=</span> <span class="n">max_slope</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">slope</span><span class="p">,</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">slope</span><span class="p">,</span> <span class="mf">1.0</span></div>
+
+
+<span class="c1"># Working well</span>
+<div class="viewcode-block" id="straight_torso"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.straight_torso">[docs]</a><span class="k">def</span> <span class="nf">straight_torso</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_slope</span><span class="o">=</span><span class="mi">9</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    1:&quot;Neck&quot; and 8:&quot;MidHip&quot;</span>
+<span class="sd">    perfect would be a vertial line, so steep/high slope is ideal</span>
+<span class="sd">    0 - straight</span>
+<span class="sd">    1 - not straight</span>
+<span class="sd">    returns slope and label</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_slope</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">slope</span><span class="p">,</span> <span class="mf">0.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">slope</span><span class="p">,</span> <span class="mf">1.0</span></div>
+
+
+<div class="viewcode-block" id="torso_forward"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.torso_forward">[docs]</a><span class="k">def</span> <span class="nf">torso_forward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_slope</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    1:&quot;Neck&quot; and 8:&quot;MidHip&quot;</span>
+<span class="sd">    perfect would be a vertial line, so steep/high slope is ideal</span>
+<span class="sd">    for too far forward we see if the slope if larger than the min slope</span>
+<span class="sd">    0 - not too far forward</span>
+<span class="sd">    1 - too far forward</span>
+<span class="sd">    returns slope and label</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rev_slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">rev_slope</span> <span class="o">&lt;=</span> <span class="n">min_slope</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rev_slope</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rev_slope</span><span class="p">,</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="torso_backward"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.torso_backward">[docs]</a><span class="k">def</span> <span class="nf">torso_backward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_slope</span><span class="o">=</span><span class="mf">0.02</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    1:&quot;Neck&quot; and 8:&quot;MidHip&quot;</span>
+<span class="sd">    perfect would be a vertial line, so steep/high slope is ideal</span>
+<span class="sd">    swtiches x and y for easier computation, want reversed slope to be</span>
+<span class="sd">    zero if straight</span>
+<span class="sd">    for too far forward we see if the slope if larger than the min slope</span>
+<span class="sd">    0 - not too far forward</span>
+<span class="sd">    1 - too far forward</span>
+<span class="sd">    returns slope and label</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rev_slope</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span><span class="o">/</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">rev_slope</span> <span class="o">&gt;=</span> <span class="n">min_slope</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rev_slope</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rev_slope</span><span class="p">,</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="head_front"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.head_front">[docs]</a><span class="k">def</span> <span class="nf">head_front</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_ratio_diff</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    0:&quot;Nose&quot;</span>
+<span class="sd">    15:&quot;REye&quot;</span>
+<span class="sd">    16:&quot;LEye&quot;</span>
+<span class="sd">    17:&quot;REar&quot;</span>
+<span class="sd">    18:&quot;LEar&quot;</span>
+<span class="sd">    Compares distance from left eye to right eye</span>
+<span class="sd">    If looking forward eye to eye distance will be larger and closer to ear to</span>
+<span class="sd">    ear distance</span>
+<span class="sd">    If looking if head is front they will be small, and much smaller than ear</span>
+<span class="sd">    to ear distance</span>
+<span class="sd">    Divide by length from ear to ear to normalize</span>
+<span class="sd">    and account for different distances</span>
+<span class="sd">    label 0 - head is front</span>
+<span class="sd">    label 1 - head is not facing the front (facing the side)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+        <span class="n">ear_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">17</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">eye_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">15</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ear_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">18</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">18</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">eye_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">16</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">eye_dist</span><span class="o">/</span><span class="n">ear_dist</span>
+    <span class="k">if</span> <span class="n">ratio</span> <span class="o">&gt;</span> <span class="n">max_ratio_diff</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ratio</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ratio</span><span class="p">,</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="front_knee_obtuse"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.front_knee_obtuse">[docs]</a><span class="k">def</span> <span class="nf">front_knee_obtuse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_angle</span><span class="o">=</span><span class="mi">75</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    10:&quot;RKnee&quot;,</span>
+<span class="sd">    11:&quot;RAnkle&quot;,</span>
+<span class="sd">    13:&quot;LKnee&quot;,</span>
+<span class="sd">    14:&quot;LAnkle&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+        <span class="n">degrees</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">13</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">degrees</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">10</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="n">degrees</span> <span class="o">&lt;</span> <span class="n">max_angle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">degrees</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">degrees</span><span class="p">,</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="front_knee_acute"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.front_knee_acute">[docs]</a><span class="k">def</span> <span class="nf">front_knee_acute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_angle</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    10:&quot;RKnee&quot;,</span>
+<span class="sd">    11:&quot;RAnkle&quot;,</span>
+<span class="sd">    13:&quot;LKnee&quot;,</span>
+<span class="sd">    14:&quot;LAnkle&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+        <span class="n">degrees</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">14</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">13</span><span class="p">]))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">degrees</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">10</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">10</span><span class="p">]))</span>
+    <span class="k">if</span> <span class="n">degrees</span> <span class="o">&gt;</span> <span class="n">min_angle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">degrees</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">degrees</span><span class="p">,</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="step_too_narrow"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.step_too_narrow">[docs]</a><span class="k">def</span> <span class="nf">step_too_narrow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">min_ratio</span><span class="o">=</span><span class="mf">0.61</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    4:&quot;RWrist&quot;,</span>
+<span class="sd">    7:&quot;LWrist&quot;,</span>
+<span class="sd">    11:&quot;RAnkle&quot;,</span>
+<span class="sd">    14:&quot;LAnkle&quot;.</span>
+<span class="sd">    compares arm span to distance between feet</span>
+<span class="sd">    if feet are wide enough, the distance between feet will be similar</span>
+<span class="sd">    to the distance between arms</span>
+<span class="sd">    label - 0 feet are wide enough</span>
+<span class="sd">    label - 1 feet are too narrow</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">arm_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">feet_disatance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">14</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">14</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">feet_disatance</span><span class="o">/</span><span class="n">arm_distance</span>
+    <span class="k">if</span> <span class="n">ratio</span> <span class="o">&lt;</span> <span class="n">min_ratio</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ratio</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ratio</span><span class="p">,</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="step_too_wide"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.step_too_wide">[docs]</a><span class="k">def</span> <span class="nf">step_too_wide</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">max_ratio</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    4:&quot;RWrist&quot;,</span>
+<span class="sd">    7:&quot;LWrist&quot;,</span>
+<span class="sd">    11:&quot;RAnkle&quot;,</span>
+<span class="sd">    14:&quot;LAnkle&quot;.</span>
+<span class="sd">    compares arm span to distance between feet</span>
+<span class="sd">    if feet are wide enough, the distance between feet will be similar</span>
+<span class="sd">    to the distance between arms</span>
+<span class="sd">    label - 0 feet are wide enough</span>
+<span class="sd">    label - 1 feet are too narrow</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">arm_distance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">feet_disatance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">14</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">11</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="mi">14</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">feet_disatance</span><span class="o">/</span><span class="n">arm_distance</span>
+    <span class="k">if</span> <span class="n">ratio</span> <span class="o">&gt;</span> <span class="n">max_ratio</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ratio</span><span class="p">,</span> <span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ratio</span><span class="p">,</span> <span class="mf">0.0</span></div>
+
+
+<div class="viewcode-block" id="warrior2_label_csv"><a class="viewcode-back" href="../../api_ref.html#aligned.modeling.warrior2_label_csv">[docs]</a><span class="k">def</span> <span class="nf">warrior2_label_csv</span><span class="p">(</span><span class="n">pose_df</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    takes averages of all rows (2d_points)</span>
+<span class="sd">    1 - needs to be adjusted</span>
+<span class="sd">    0 - good</span>
+<span class="sd">    Order for 9 digit labeling:</span>
+<span class="sd">    1. arms</span>
+<span class="sd">    2. front_knee_obtuse</span>
+<span class="sd">    3. front_knee_acute</span>
+<span class="sd">    4. head_sideways</span>
+<span class="sd">    5. hips_angled</span>
+<span class="sd">    6. narrow_step</span>
+<span class="sd">    7. shoulders_up</span>
+<span class="sd">    8. torso_forward</span>
+<span class="sd">    9. torso_backward</span>
+<span class="sd">    10. wide_step</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x_y_points</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_ten_still_frames</span><span class="p">(</span><span class="n">pose_df</span><span class="p">)))</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 1 arms</span>
+    <span class="n">slope</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">straight_arms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span>
+    <span class="c1"># 2 and 3 front_knee_obtuse and front_knee_acute</span>
+    <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+        <span class="n">obtuse_angle</span><span class="p">,</span> <span class="n">obtuse_label</span> <span class="o">=</span> <span class="n">front_knee_obtuse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+        <span class="n">acute_angle</span><span class="p">,</span> <span class="n">acute_label</span> <span class="o">=</span> <span class="n">front_knee_acute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">obtuse_angle</span><span class="p">,</span> <span class="n">obtuse_label</span> <span class="o">=</span> <span class="n">front_knee_obtuse</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+        <span class="n">acute_angle</span><span class="p">,</span> <span class="n">acute_label</span> <span class="o">=</span> <span class="n">front_knee_acute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obtuse_label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obtuse_angle</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acute_label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acute_angle</span><span class="p">)</span>
+    <span class="c1"># 4 head_sideways</span>
+    <span class="n">ratio</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">head_front</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
+    <span class="c1"># 5 hips_angled</span>
+    <span class="n">slope</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">hips_square</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span>
+    <span class="c1"># 6 narrow_step</span>
+    <span class="n">ratio</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">step_too_narrow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
+    <span class="c1"># 7 shoulders_up</span>
+    <span class="n">left_slope</span><span class="p">,</span> <span class="n">right_slope</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">shoulders_up</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">left_slope</span><span class="p">,</span> <span class="n">right_slope</span><span class="p">))</span>
+    <span class="c1"># 8 torso_forward</span>
+    <span class="n">slope</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">torso_forward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span>
+    <span class="c1"># 9 torso_backward</span>
+    <span class="n">slope</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">torso_backward</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">slope</span><span class="p">)</span>
+    <span class="c1"># 10 too wide step</span>
+    <span class="n">ratio</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">step_too_wide</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">labels</span><span class="p">,</span> <span class="n">values</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Aligned</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Code Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_ref.html">Auto Generated Code Documentation</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Katja Witforth, Sankeerti Haniyur, Quinn Keck,     Masha Vasilenko, Connor Swanson, Evan Calkins, Brian Dorsey.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
