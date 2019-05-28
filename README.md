@@ -4,10 +4,9 @@
 </div>
 
 # Yoga Pose Correction App
-# Project Description
 Aligned is a yoga pose correction web application that processes images and videos of a user’s yoga poses and provides feedback on how to improve the pose. The app was built using Flask and runs on an Amazon EC2 instance with GPU.
 
-The overall process is as follows:
+# How does it work?
 
 * User logs in and selects which pose to evaluate
 * App provides instructions on how to execute the pose
