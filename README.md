@@ -1,6 +1,6 @@
 
 <div align="center">
-    <img src="code/aligned/app/static/images/aligned_logo.png",style="height:50px;">
+    <img src="code/aligned/app/static/images/logo.svg",style="height:50px;">
 </div>
 
 # ALIGNED
