@@ -17,8 +17,8 @@ Video is automatically processed using [OpenPose](https://github.com/CMU-Percept
 
 <i> Note that the app's website is not currently available due to the high cost of running AWS EC2 instance.</i>
 
-* [Watch Demo Video](https://youtu.be/t8HMLYR1-FE)
-* [Slide Deck for final presentation to VCs](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/Aligned_VC_Presentation_Deck.pdf)
-* [Flask routes](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/code/aligned/app/routes.py)
-* [Video processing script](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/code/aligned/process_openpose_user.py)
-* [Modeling](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/code/aligned/modeling.py)
+🎥 [Watch Demo Video](https://youtu.be/t8HMLYR1-FE)
+💰 [Slide Deck for final presentation to VCs](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/Aligned_VC_Presentation_Deck.pdf)
+💻 [Flask routes](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/code/aligned/app/routes.py)
+🕹 [Video processing script](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/code/aligned/process_openpose_user.py)
+🧘 [Modeling](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/code/aligned/modeling.py)
