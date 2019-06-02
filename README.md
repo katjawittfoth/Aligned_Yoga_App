@@ -19,6 +19,8 @@ Aligned is a yoga pose correction web application that uses computer vision and 
 
 🎥 👉  [Watch Demo Video](https://youtu.be/t8HMLYR1-FE) <br>
 
+<br>As a certified yoga teacher, I was thrilled to combine my two passions in this project: data science and yoga. 
+
 ## Main Scripts:
 * [Slide Deck for final presentation to VCs](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/Aligned_VC_Presentation_Deck.pdf)<br>
 * [Flask routes](https://github.com/katjawittfoth/Aligned_Yoga_App/blob/master/code/aligned/app/routes.py)
